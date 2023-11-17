@@ -32,7 +32,7 @@ func NewHttpServer(bindAddr string) *HttpServer {
 
 func (s *HttpServer) Serve(serveCtx context.Context) error {
 	s.Server.Handler = s.RootRouter
-	log.Print("http server listen", "addr", s.Server.Addr)
+	slog.Info("http server listen", "addr", s.Server.Addr)
 	err := s.Server.ListenAndServe()
 	if err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
@@ -54,7 +54,7 @@ func (s *HttpServer) GracefulShutdown(serverCtx context.Context, timeout time.Du
 	go func() {
 		<-shutdownCtx.Done()
 		if errors.Is(shutdownCtx.Err(), context.DeadlineExceeded) {
-			log.Print("http server graceful shutdown timed out.. forcing exit.")
+			slog.Info("http server graceful shutdown timed out.. forcing exit.")
 		}
 	}()
 	// Trigger graceful shutdown
